@@ -82,7 +82,7 @@
     <string name="hide_fixed">固定时长</string>
     <string name="hide_dynamic">动态时长</string>
     <string name="display_duration">显示时长 (秒)</string>
-    <string name="duration_per_word">每个词时长 (毫秒)</string>
+    <string name="duration_per_word">每个字符时长 (毫秒)</string>
     <string name="overlay_opacity">文本框不透明度</string>
     <string name="ball_opacity">悬浮球不透明度</string>
     <string name="show_raw_boxes">显示原始文本框边界</string>

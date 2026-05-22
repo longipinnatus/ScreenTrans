@@ -124,7 +124,7 @@ class LogActivity : ComponentActivity() {
                         IconButton(
                             onClick = {
                                 val timestamp = java.text.SimpleDateFormat("yyyyMMdd_HHmm", java.util.Locale.US).format(java.util.Date())
-                                exportLauncher.launch("ScreenTransAI_Logs_$timestamp.log")
+                                exportLauncher.launch("ScreenTrans_Logs_$timestamp")
                             },
                             enabled = logs.isNotEmpty()
                         ) {

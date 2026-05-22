@@ -81,7 +81,7 @@
     <string name="hide_fixed">Fixed</string>
     <string name="hide_dynamic">Dynamic</string>
     <string name="display_duration">Display Duration (s)</string>
-    <string name="duration_per_word">Duration Per Word (ms)</string>
+    <string name="duration_per_word">Duration Per Character (ms)</string>
     <string name="overlay_opacity">Overlay Opacity</string>
     <string name="ball_opacity">Floating Ball Opacity</string>
     <string name="show_raw_boxes">Show Raw Boxes</string>

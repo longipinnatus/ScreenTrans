@@ -196,7 +196,7 @@ object LogManager {
         val fullDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
         val now = fullDateFormat.format(Date())
 
-        sb.append("ScreenTrans AI Logs - Exported at $now\n")
+        sb.append("ScreenTrans Logs - Exported at $now\n")
         sb.append("=".repeat(64)).append("\n\n")
 
         if (allLogs.isEmpty()) {
