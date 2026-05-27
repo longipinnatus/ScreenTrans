@@ -738,7 +738,8 @@ class SettingsActivity : AppCompatActivity() {
             listOf(
                 AppSettings.APP_LANGUAGE_DEFAULT to R.string.language_system_default,
                 AppSettings.APP_LANGUAGE_ZH to R.string.language_zh,
-                AppSettings.APP_LANGUAGE_EN to R.string.language_en
+                AppSettings.APP_LANGUAGE_EN to R.string.language_en,
+                AppSettings.APP_LANGUAGE_JA to R.string.language_ja
             )
         }
 
@@ -779,7 +780,8 @@ class SettingsActivity : AppCompatActivity() {
             listOf(
                 AppSettings.APP_LANGUAGE_DEFAULT to R.string.language_system_default,
                 AppSettings.APP_LANGUAGE_ZH to R.string.language_zh,
-                AppSettings.APP_LANGUAGE_EN to R.string.language_en
+                AppSettings.APP_LANGUAGE_EN to R.string.language_en,
+                AppSettings.APP_LANGUAGE_JA to R.string.language_ja
             )
         }
         val currentLangLabel = stringResource(languages.find { it.first == currentSettings.appLanguage }?.second ?: R.string.language_system_default)

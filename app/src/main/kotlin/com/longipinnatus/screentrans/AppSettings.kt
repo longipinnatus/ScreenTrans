@@ -68,6 +68,7 @@ object AppSettings {
     const val APP_LANGUAGE_DEFAULT = ""
     const val APP_LANGUAGE_ZH = "zh"
     const val APP_LANGUAGE_EN = "en"
+    const val APP_LANGUAGE_JA = "ja"
     const val DEFAULT_APP_LANGUAGE = APP_LANGUAGE_DEFAULT
 
     val CURRENCY_SYMBOLS = listOf("¥", "$", "€")

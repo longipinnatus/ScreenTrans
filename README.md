@@ -1,6 +1,6 @@
 # ScreenTrans
 
-[简体中文](README.md) | [English](README.en_US.md)
+[简体中文](README.md) | [English](README.en_US.md) | [日本語](README.ja_JP.md)
 
 [![Android Build](https://github.com/longipinnatus/screentrans/actions/workflows/android-build.yml/badge.svg)](https://github.com/longipinnatus/screentrans/actions/workflows/android-build.yml) ![GitHub all releases](https://img.shields.io/github/downloads/longipinnatus/ScreenTrans/total)
 
