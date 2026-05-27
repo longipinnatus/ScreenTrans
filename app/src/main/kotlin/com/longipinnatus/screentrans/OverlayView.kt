@@ -177,10 +177,10 @@ class OverlayView @JvmOverloads constructor(
 
         // 1. Set font size based on median box height
         val medianBoxHeight = block.lines.map { it.bounds.height().toFloat() }.median()
-        textPaint.textSize = medianBoxHeight.coerceIn(12f, 120f)
+        textPaint.textSize = if (block.sourceTextFontSize > 0f) block.sourceTextFontSize else medianBoxHeight.coerceIn(12f, 120f)
 
-        // Get font metrics for precise height calculation
-        var fm = textPaint.fontMetrics
+        val fm = Paint.FontMetrics()
+        textPaint.getFontMetrics(fm)
         var fontHeight = fm.descent - fm.ascent
 
         // 2. Calculate line spacing multiplier precisely to match original line distance
@@ -216,14 +216,16 @@ class OverlayView @JvmOverloads constructor(
                 layout = buildLayout()
             }
             // Update metrics after final size is decided
-            fm = textPaint.fontMetrics
+            textPaint.getFontMetrics(fm)
             fontHeight = fm.descent - fm.ascent
         }
-
+        if (block.sourceTextFontSize == 0f) {
+            block.sourceTextFontSize = textPaint.textSize
+        }
 
         val actualTextWidth = getMaxLineWidth(layout)
         val finalWidth = max(targetWidth, actualTextWidth)
-        val finalHeight = max(targetHeight, layout.height.toFloat())
+        val finalHeight = max(targetHeight, layout.getLineBaseline(layout.lineCount - 1) + fm.descent)
 
         // 4. Calculate vertical offset to center the font in the box height
         val verticalOffset = (medianBoxHeight - fontHeight) / 2f
@@ -266,7 +268,8 @@ class OverlayView @JvmOverloads constructor(
 
         // Prioritize median column width for font size
         val medianColWidth = block.lines.map { it.bounds.width().toFloat() }.median()
-        var bestTextSize = medianColWidth.coerceIn(12f, 120f)
+        var bestTextSize = if (block.sourceTextFontSize > 0f) block.sourceTextFontSize else medianColWidth.coerceIn(12f, 120f)
+        textPaint.textSize = bestTextSize
 
         // Calculate column spacing multiplier from original lines
         val colSpacingMulti = if (block.lines.size > 1) {
@@ -306,6 +309,9 @@ class OverlayView @JvmOverloads constructor(
                 bestTextSize -= 0.5f
                 columnGroups = layoutVertical(bestTextSize)
             }
+        }
+        if (block.sourceTextFontSize == 0f) {
+            block.sourceTextFontSize = bestTextSize
         }
 
         val finalColWidth = bestTextSize * colSpacingMulti

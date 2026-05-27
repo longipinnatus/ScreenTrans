@@ -73,7 +73,8 @@ data class TextBlock(
     var translatedText: String? = null,
     var textColor: Int? = null,
     var backgroundColor: Int? = null,
-    var colorWeight: Int = 0
+    var colorWeight: Int = 0,
+    var sourceTextFontSize: Float = 0f
 ) : OcrEntity {
     fun offset(dx: Int, dy: Int) {
         bounds.offset(dx, dy)

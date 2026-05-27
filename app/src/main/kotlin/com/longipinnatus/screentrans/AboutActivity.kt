@@ -1,8 +1,6 @@
 package com.longipinnatus.screentrans
 
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -52,20 +50,13 @@ class AboutActivity : ComponentActivity() {
 fun AboutScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     val versionName = remember {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                context.packageManager.getPackageInfo(
-                    context.packageName,
-                    PackageManager.PackageInfoFlags.of(0)
-                ).versionName
-            } else {
-                @Suppress("DEPRECATION")
-                context.packageManager.getPackageInfo(context.packageName, 0).versionName
-            }
-        } catch (e: Exception) {
-            LogManager.logSimple(LogType.ERROR, "AboutActivity", "Failed to get version name: ${e.message}")
-            "1.0"
-        }
+        runCatching {
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        }.onFailure { e ->
+            LogManager.logSimple(
+                LogType.ERROR, "AboutActivity", "Failed to get version name: ${e.message}"
+            )
+        }.getOrNull() ?: "0.0"
     }
 
     Scaffold(
@@ -74,7 +65,10 @@ fun AboutScreen(onBack: () -> Unit) {
                 title = { Text(stringResource(R.string.about)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
                     }
                 }
             )
@@ -120,7 +114,9 @@ fun AboutScreen(onBack: () -> Unit) {
                 ),
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.clickable {
-                    val intent = Intent(Intent.ACTION_VIEW, "https://github.com/longipinnatus/ScreenTrans".toUri())
+                    val intent = Intent(
+                        Intent.ACTION_VIEW, "https://github.com/longipinnatus/ScreenTrans".toUri()
+                    )
                     context.startActivity(intent)
                 }
             )
