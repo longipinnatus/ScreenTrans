@@ -196,14 +196,21 @@ class FloatingService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedSta
     }
 
     private fun stopMediaProjection() {
-        LogManager.logSimple(LogType.INFO, TAG, "stopMediaProjection called")
-        virtualDisplay?.release()
-        virtualDisplay = null
-        imageReader?.close()
-        imageReader = null
-        mediaProjection?.stop()
-        mediaProjection = null
-        virtualDisplayCreated = false
+        val proj = mediaProjection ?: return
+        LogManager.logSimple(LogType.INFO, TAG, "Stop MediaProjection")
+
+        try {
+            proj.stop()
+        } catch (e: Exception) {
+            LogManager.logException(TAG, "Failed to stop MediaProjection", e)
+        } finally {
+            mediaProjection = null
+            virtualDisplay?.release()
+            virtualDisplay = null
+            imageReader?.close()
+            imageReader = null
+            virtualDisplayCreated = false
+        }
     }
 
     private fun ensureProjectionReady(): Boolean {
