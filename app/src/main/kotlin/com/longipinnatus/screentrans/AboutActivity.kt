@@ -141,7 +141,7 @@ fun AboutScreen(onBack: () -> Unit) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "The software is provided \"as is\", without warranty of any kind. This project is AI-assisted.",
+                text = "This project is AI-assisted, and the software is provided \"as is\", without warranty of any kind.",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.secondary,
                 textAlign = TextAlign.Center

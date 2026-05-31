@@ -177,58 +177,57 @@ class OverlayView @JvmOverloads constructor(
 
         // 1. Set font size based on median box height
         val medianBoxHeight = block.lines.map { it.bounds.height().toFloat() }.median()
-        textPaint.textSize = if (block.sourceTextFontSize > 0f) block.sourceTextFontSize else medianBoxHeight.coerceIn(12f, 120f)
+        textPaint.textSize = block.sourceTextFontSize.takeIf { it > 0f } ?: medianBoxHeight.coerceAtLeast(12f)
 
         val fm = Paint.FontMetrics()
-        textPaint.getFontMetrics(fm)
-        var fontHeight = fm.descent - fm.ascent
 
-        // 2. Calculate line spacing multiplier precisely to match original line distance
-        // Use fontHeight as denominator to eliminate downward drift
-        val lineSpacingMulti = if (block.lines.size > 1) {
-            val dist = block.lines.zipWithNext { a, b -> (b.bounds.top - a.bounds.top).toFloat() }
-                .filter { it > 0 }
-            if (dist.isNotEmpty()) (dist.median() / fontHeight).coerceIn(0.5f, 3.0f) else 1.0f
-        } else 1.0f
+        // 2. Calculate original line distance to maintain it during scaling
+        val originalLinesMedianDist = block.lines
+            .zipWithNext { a, b -> (b.bounds.top - a.bounds.top).toFloat() }
+            .filter { it > 0 }
+            .ifEmpty { null }
+            ?.median()
 
-        fun buildLayout() = StaticLayout.Builder.obtain(text, 0, text.length, textPaint, max(10, targetWidth.toInt()))
-            .setAlignment(Layout.Alignment.ALIGN_NORMAL)
-            .setLineSpacing(0f, lineSpacingMulti)
-            .setIncludePad(false)
-            .apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    setUseLineSpacingFromFallbacks(false)
-                }
-            }
-            .build()
+        fun buildLayout(): StaticLayout {
+            textPaint.getFontMetrics(fm)
+            val currentFontHeight = fm.descent - fm.ascent
+            val spacingAdd = originalLinesMedianDist?.let { it - currentFontHeight} ?: 0f
+
+            return StaticLayout.Builder.obtain(text, 0, text.length, textPaint, targetWidth.toInt())
+                .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+                .setLineSpacing(spacingAdd, 1.0f)
+                .setIncludePad(false)
+                .apply { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) setUseLineSpacingFromFallbacks(false) }
+                .build()
+        }
 
         var layout = buildLayout()
 
         // 3. Scaling strategy: shrink text if it wraps more than expected or exceeds target height
-        val expectedLineCount = max(1, block.lines.size)
-        val shouldShrink = {
-            layout.lineCount > expectedLineCount || (expectedLineCount > 1 && layout.height > targetHeight * 1.05f)
-        }
-
-        if (shouldShrink()) {
-            while (shouldShrink() && textPaint.textSize > 12f) {
+        val expectedLineCount = block.lines.size
+        do {
+            if (textPaint.textSize <= 12f) break
+            textPaint.getFontMetrics(fm)
+            val contentHeight = layout.getLineBaseline(layout.lineCount - 1) + fm.descent
+            val shouldShrink = layout.lineCount > expectedLineCount || contentHeight > targetHeight * 1.05f
+            if (shouldShrink) {
                 textPaint.textSize -= 0.5f
                 layout = buildLayout()
             }
-            // Update metrics after final size is decided
-            textPaint.getFontMetrics(fm)
-            fontHeight = fm.descent - fm.ascent
-        }
+        } while (shouldShrink)
+
+        textPaint.getFontMetrics(fm)
+        val finalFontHeight = fm.descent - fm.ascent
+
         if (block.sourceTextFontSize == 0f) {
             block.sourceTextFontSize = textPaint.textSize
         }
 
-        val actualTextWidth = getMaxLineWidth(layout)
-        val finalWidth = max(targetWidth, actualTextWidth)
+        val finalWidth = max(targetWidth, (0 until layout.lineCount).maxOfOrNull { layout.getLineWidth(it) } ?: 0f)
         val finalHeight = max(targetHeight, layout.getLineBaseline(layout.lineCount - 1) + fm.descent)
 
         // 4. Calculate vertical offset to center the font in the box height
-        val verticalOffset = (medianBoxHeight - fontHeight) / 2f
+        val verticalOffset = (medianBoxHeight - finalFontHeight) / 2f
 
         val drawRect = RectF(left, top, left + finalWidth, top + finalHeight)
 
@@ -268,7 +267,7 @@ class OverlayView @JvmOverloads constructor(
 
         // Prioritize median column width for font size
         val medianColWidth = block.lines.map { it.bounds.width().toFloat() }.median()
-        var bestTextSize = if (block.sourceTextFontSize > 0f) block.sourceTextFontSize else medianColWidth.coerceIn(12f, 120f)
+        var bestTextSize = if (block.sourceTextFontSize > 0f) block.sourceTextFontSize else medianColWidth.coerceAtLeast(12f)
         textPaint.textSize = bestTextSize
 
         // Calculate column spacing multiplier from original lines
@@ -347,15 +346,6 @@ class OverlayView @JvmOverloads constructor(
         // Restore original colors
         textPaint.color = originalTextColor
         bgPaint.color = originalBgColor
-    }
-
-    private fun getMaxLineWidth(layout: StaticLayout): Float {
-        var maxW = 0f
-        for (i in 0 until layout.lineCount) {
-            val w = layout.getLineWidth(i)
-            if (w > maxW) maxW = w
-        }
-        return maxW
     }
 
     private fun List<Float>.median(): Float {

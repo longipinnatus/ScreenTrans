@@ -48,6 +48,10 @@ data class TextLine(
     val backgroundColor: Int? = null,
     val colorWeight: Int = 0
 ) : OcrEntity {
+    init {
+        require(elements.isNotEmpty()) { "TextLine must contain at least one element" }
+    }
+
     fun offset(dx: Int, dy: Int) {
         bounds.offset(dx, dy)
         elements.forEach { it.offset(dx, dy) }
@@ -76,6 +80,10 @@ data class TextBlock(
     var colorWeight: Int = 0,
     var sourceTextFontSize: Float = 0f
 ) : OcrEntity {
+    init {
+        require(lines.isNotEmpty()) { "TextBlock must contain at least one line" }
+    }
+
     fun offset(dx: Int, dy: Int) {
         bounds.offset(dx, dy)
         lines.forEach { it.offset(dx, dy) }
