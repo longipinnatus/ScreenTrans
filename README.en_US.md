@@ -16,36 +16,28 @@ An open-source Android OCR Screen Translator with customizable LLM API integrati
 
 You can download the latest version from [GitHub Releases](https://github.com/longipinnatus/screentrans/releases/latest).
 
-For most Android devices, downloading `app-arm64-v8a-release.apk` is sufficient.
+For most Android devices, just use [![Download APK](https://img.shields.io/badge/Download-APK%20(arm64--v8a)-brightgreen?style=flat-square&logo=android)](https://github.com/longipinnatus/ScreenTrans/releases/latest/download/app-arm64-v8a-release.apk).
 
 
 ## Project Features
 
-### 1. Fast and Lightweight OCR Recognition
+* **Multi-model Support**: Built-in lightweight PaddleOCR models (Simplified/Traditional Chinese, English, Japanese), plus support for custom PaddleOCR ONNX models for high-accuracy OCR or language-specific adaptation (in progress).
+* **Tunable Model Parameters**: OCR model parameters can be adjusted to improve recognition rates in specific scenarios.
+* **Vertical Text Support**: Supports vertical text recognition for Chinese and Japanese, useful for manga, novels, and classical texts.
+* **Landscape/Portrait Adaptation**: Recognition remains available when switching between landscape and portrait modes.
 ---
-* **Multimodel Support**: Built-in lightweight OCR models (supporting Simplified/Traditional Chinese, English, and Japanese), with the ability to load custom ONNX models for higher precision or specific language adaptation.
-* **Model Parameter Tuning**: Provides a parameter adjustment panel to optimize recognition parameters for source files with varying clarity, improving recognition rates in specific scenarios.
-* **Vertical Text Adaptation**: Supports vertical text recognition for Chinese and Japanese, catering to reading scenarios such as manga, novels, and classical texts.
-* **Horizontal/Vertical Scene Adaptation**: Supports seamless switching between landscape and portrait modes on devices.
-
-### 2. Flexible LLM Integration
+* **Standard API Integration**: Supports OpenAI-compatible API protocol with custom endpoints.
+* **Streaming Output**: No need to wait for the full response when processing multiple text boxes, reducing wait time.
+* **Custom Translation Style**: Prompt is configurable, so users can tune translation style and add a glossary for different scenarios.
+* **API Usage Metrics**: Built-in token usage tracking and billing estimation for real-time API cost awareness.
 ---
-* **Standard API Access**: Supports the OpenAI API protocol and compatible custom endpoints.
-* **Streaming Output**: Enables scrolling return of translated content, eliminating the need to wait for full responses when processing multiple text boxes, thus reducing wait time.
-* **Customizable Translation Style**: Supports user-defined prompts, allowing adjustments to translation style and terminology based on the context.
-* **Transparent Usage Metrics**: Built-in token usage statistics and cost calculation, providing real-time visibility into API consumption costs.
-
-### 3. Automated Workflows
+* **Custom Result Filtering**: Automatically filters irrelevant text by textbox size and regular expressions (such as page numbers and watermarks).
+* **Auto Copy to Clipboard**: Recognized text can be copied automatically, with selectable copy mode (source only, translation only, or source + translation).
 ---
-* **Customizable Exclusion Logic**: Supports automatic ignoring of irrelevant areas based on text box size and regular expressions, effectively filtering out page numbers, watermarks, etc.
-* **Clipboard Synchronization**: Recognized results can be automatically copied, with flexible configuration of copied content (original text only, translation only, or side-by-side comparison).
-
-### 4. Personalization
----
-* **Font Flexibility**: Supports custom display fonts, compatible with external TTF/OTF font file imports.
-* **UI Transparency Adjustment**: Transparency of both text boxes and the floating button can be set independently.
-* **Dynamic Interaction Logic**: Supports automatic hiding of translated results after a countdown, or switching to manual dismissal mode to maintain a clean interface.
-* **Color Adaptation**: Supports background color overlay, allowing translated text boxes to automatically blend with the original background, providing a near-native visual experience.
+* **Custom Display Fonts**: Supports system fonts and importing external TTF/OTF font files.
+* **UI Transparency Control**: Both overlay textboxes and the floating button support adjustable transparency.
+* **Auto-hide Translation**: Translated overlays can hide automatically after a countdown, or be set to manual close mode.
+* **Adaptive Colors**: Detects background colors and blends translation overlays with the source background.
 
 
 ## How to Use
